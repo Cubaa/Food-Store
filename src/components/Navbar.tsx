@@ -34,6 +34,14 @@ export const PageNavbar: FC = () => {
           <Nav.Link as={Link} className="ml-25" to="/products" href="/products">
             Products
           </Nav.Link>
+          <Nav.Link
+            as={Link}
+            className="ml-25"
+            to="/categories"
+            href="/categories"
+          >
+            Categories
+          </Nav.Link>
         </Nav>
       </Container>
     </Navbar>

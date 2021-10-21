@@ -3,9 +3,10 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { Container } from "react-bootstrap";
 import { PageNavbar } from "./components/Navbar";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import { ProductsPage } from "./components/ProductsPage";
+import  {ProductsPage}  from "./components/ProductsPage";
 import { MainPage } from "./components/MainPage";
 import { AddProduct } from "./components/AddProduct";
+import { CategoriesPage } from "./components/CategoriesPage";
 
 function App() {
   return (
@@ -21,6 +22,9 @@ function App() {
           </Route>
           <Route path="/products">
             <ProductsPage />
+          </Route>
+          <Route path="/categories">
+            <CategoriesPage />
           </Route>
           <Route path="/addProduct">
             <AddProduct />

@@ -7,6 +7,5 @@ export const sendRequest = async (requestConfig: IReqData) => {
     body: requestConfig.body ? JSON.stringify(requestConfig.body) : null,
   });
   const responseData = await res.json();
-  console.log(responseData);
   return responseData.data;
 };

@@ -1,0 +1,10 @@
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+span.company-name {
+  color: #ff4500 !important;
+  background-color: transparent !important;
+}

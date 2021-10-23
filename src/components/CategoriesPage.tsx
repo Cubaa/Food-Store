@@ -7,10 +7,10 @@ import TablePage from "./TablePage";
 
 export const CategoriesPage = () => {
   const categoriesFromApi = useAppSelector<ICategory[]>(
-    (state) => state.categories.categories
-  );
-
-  const status = useAppSelector((state) => state.categories.status);
+    state => state.categories.categories
+    );
+console.log(categoriesFromApi)
+  const status = useAppSelector<string>((state) => state.categories.status);
 
   const dispatch = useAppDispatch();
 
@@ -19,6 +19,7 @@ export const CategoriesPage = () => {
   }, [dispatch]);
 
   return (
+ 
     <Container className="h-100">
       {status === "loading" && (
         <div
@@ -42,7 +43,7 @@ export const CategoriesPage = () => {
       <Row className="pt-5 w-100 m-auto">
         <Col>
           {status === "succeeded" && (
-            <TablePage data={categoriesFromApi} name="categories" />
+            <TablePage categories={categoriesFromApi} name="categories" />
           )}
           {status === "failed" && (
             <p
@@ -61,5 +62,5 @@ export const CategoriesPage = () => {
         </Col>
       </Row>
     </Container>
-  );
+   );
 };

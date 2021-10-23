@@ -1,14 +1,14 @@
 import React, { useEffect } from "react";
 import { Container, Row, Col, Carousel } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { fetchCategories } from "../features/categories/categoriesSlice";
-import { useAppDispatch, useAppSelector } from "../hooks";
+// import { fetchCategories } from "../features/categories/categoriesSlice";
+// import { useAppDispatch, useAppSelector } from "../hooks";
 import { ICategory } from "../Types/categoryTypes";
 
 export const MainPage = () => {
   return (
-    <Container className="pt-5">
-      <Carousel>
+    <Container className="pt-5 d-flex flex-column align-items-center">
+      <Carousel className="w-100">
         <Carousel.Item style={{ height: "450px" }}>
           <img
             className="d-block w-100 h-25 rounded"
@@ -54,7 +54,7 @@ export const MainPage = () => {
           </Carousel.Caption>
         </Carousel.Item>
       </Carousel>
-      <Row>
+      <Row className="w-50">
         <Col className="d-flex justify-content-center align-items-center pt-5">
           <Link
             className="btn btn-primary btn-lg"
@@ -62,6 +62,15 @@ export const MainPage = () => {
             to="/addProduct"
           >
             Add Product
+          </Link>
+        </Col>
+        <Col className="d-flex justify-content-center align-items-center pt-5">
+          <Link
+            className="btn btn-primary btn-lg"
+            role="button"
+            to="/addCategory"
+          >
+            Add Category
           </Link>
         </Col>
       </Row>

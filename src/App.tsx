@@ -7,6 +7,8 @@ import  {ProductsPage}  from "./components/ProductsPage";
 import { MainPage } from "./components/MainPage";
 import { AddProduct } from "./components/AddProduct";
 import { CategoriesPage } from "./components/CategoriesPage";
+import { AddCategory } from "./components/AddCategory";
+import { EditCategory } from "./components/EditCategory";
 
 function App() {
   return (
@@ -28,6 +30,12 @@ function App() {
           </Route>
           <Route path="/addProduct">
             <AddProduct />
+          </Route>
+          <Route path="/addCategory">
+            <AddCategory />
+          </Route>
+          <Route path="/editCategory/:id">
+            <EditCategory />
           </Route>
         </Switch>
       </Container>

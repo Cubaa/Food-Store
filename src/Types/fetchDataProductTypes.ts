@@ -1,4 +1,4 @@
-export interface IProduct {
+export interface IFetchDataproductTypes {
   id: number;
   category_name?: string;
   uniq_id: number;

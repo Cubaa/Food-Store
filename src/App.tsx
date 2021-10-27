@@ -3,12 +3,13 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { Container } from "react-bootstrap";
 import { PageNavbar } from "./components/Navbar";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import  {ProductsPage}  from "./components/ProductsPage";
-import { MainPage } from "./components/MainPage";
-import { AddProduct } from "./components/AddProduct";
-import { CategoriesPage } from "./components/CategoriesPage";
-import { AddCategory } from "./components/AddCategory";
-import { EditCategory } from "./components/EditCategory";
+import  {ProductsPage}  from "./components/Pages/ProductsPage";
+import { MainPage } from "./components/Pages/MainPage";
+import { AddProductPage } from "./components/Pages/AddProductPage";
+import { CategoriesPage } from "./components/Pages/CategoriesPage";
+import { AddCategoryPage } from "./components/Pages/AddCategoryPage";
+import { EditCategoryPage } from "./components/Pages/EditCategoryPage";
+import { EditProductPage } from "./components/Pages/EditProductPage";
 
 function App() {
   return (
@@ -29,13 +30,16 @@ function App() {
             <CategoriesPage />
           </Route>
           <Route path="/addProduct">
-            <AddProduct />
+            <AddProductPage />
           </Route>
           <Route path="/addCategory">
-            <AddCategory />
+            <AddCategoryPage />
           </Route>
           <Route path="/editCategory/:id">
-            <EditCategory />
+            <EditCategoryPage />
+          </Route>
+          <Route path="/editProduct/:id">
+            <EditProductPage />
           </Route>
         </Switch>
       </Container>

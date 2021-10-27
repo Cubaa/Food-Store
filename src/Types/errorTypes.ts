@@ -7,6 +7,6 @@ export interface IErrorKeys{
     name: string;
     category_id: string;
 }
-export interface IErr{
-    errors: IErrorTypes[]
-}
+// export interface IErr{
+//     errors: IErrorTypes[]
+// }

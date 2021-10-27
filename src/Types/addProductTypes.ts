@@ -1,4 +1,4 @@
-export interface ISendDataproductTypes {
+export interface IAddProductTypes {
   name: string | undefined;
   default_volume?: number;
   critical_amount_level?: number;

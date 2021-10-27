@@ -1,115 +1,80 @@
 import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
-import { AddCategory } from "../../components/AddCategory";
-import { ICategory } from "../../Types/categoryTypes";
-import { IReqData } from "../../Types/reqDataTypes";
-import { sendRequest } from "../../utils/sendRequest";
+import { ICategoryTypes } from "../../Types/categoryTypes";
+import { IEditCategoryTypes } from "../../Types/editCategoryTypes";
+import { IErrorTypes } from "../../Types/errorTypes";
+import { IAddCategoryTypes } from "../../Types/addCategoryTypes";
+import { addCategorySend } from "./utils/addCategorySend";
+import { editCategorySend } from "./utils/editCategorySend";
+import { fetchCategoriesRequest } from "./utils/fetchCategoriesRequest";
 
 interface ICategoriesState {
-  categories: ICategory[];
-  error: string | undefined | null;
-  status: string;
+  categories: ICategoryTypes[];
+  errors: IErrorTypes[];
+  status: string | undefined;
+  loading: string;
 }
 
 const initialState: ICategoriesState = {
   categories: [],
-  error: null,
-  status: "idle",
+  status: "",
+  loading: "idle",
+  errors: []
 };
 
-const fetchConfig: IReqData = {
-  url: "https://newdemostock.gopos.pl/ajax/219/product_categories",
-  method: "GET",
-  headers: {
-    "Content-Type": "application/json",
-    Authorization: "fd9ba9e1-0788-4e8f-ac46-a43df43e205e",
-  },
-};
-
-export const fetchCategories = createAsyncThunk<ICategory[]>(
+export const fetchCategories = createAsyncThunk<ICategoryTypes[]>(
   "categories/fetchCategories",
-  () => sendRequest(fetchConfig)
+  async ():Promise<ICategoryTypes[]> => {
+      const res = await fetchCategoriesRequest()
+      return res.data;
+  }
 );
 
-interface ISendCategoryTypes{
-  name: string | undefined;
-}
 
-export const addCategory = createAsyncThunk<any, ISendCategoryTypes>(
+export const addCategory = createAsyncThunk<IErrorTypes[], IAddCategoryTypes>(
   "categories/addCategory",
-  async (category) => {
-    try{
-    const data = {
+  async (category:IAddCategoryTypes):Promise<IErrorTypes[]> => {
+    const data:IAddCategoryTypes = {
            name: category.name,
            status: "ENABLED",
          };
-    const res = await fetch("https://newdemostock.gopos.pl/ajax/219/product_categories", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "fd9ba9e1-0788-4e8f-ac46-a43df43e205e",
-      },
-      body: JSON.stringify(data)
-    });
-    console.log(res);
-    const responseData = await res.json();
-    console.log(responseData);
-    return responseData;
-  }
-  catch(err){
-    console.log(err)
-    throw err;
-  }
-  }
-);
-
-interface IEditCategory{
-    id: number;
-    categoryName: string | undefined;
-}
-
-export const editCategory = createAsyncThunk<any, IEditCategory>(
-  "categories/editCategory",
-  async (data) => {
-    try{
-   
-    const res = await fetch(`https://newdemostock.gopos.pl/ajax/219/product_categories/${data.id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "fd9ba9e1-0788-4e8f-ac46-a43df43e205e",
-      },
-      body: JSON.stringify({name: data.categoryName})
-
-    });
-    console.log(res);
-    const responseData = await res.json();
-    console.log(responseData);
-    return responseData;
-  }
-  catch(err){
-    console.log(err)
-    throw err;
-  }
+    const res = await addCategorySend(data)
+    return res.errors;
   }
 );
 
 
 
+export const editCategory = createAsyncThunk<IErrorTypes[], IEditCategoryTypes>("categories/editCategory", async (category:IEditCategoryTypes):Promise<IErrorTypes[]> => {
+        const data:IEditCategoryTypes = {
+          id: category.id,
+          name: category.name,
+          status: "ENABLED",
+        }
+        const res = await editCategorySend(data)
+        return res.errors;
+  }
+);
 
-export const productsSlice = createSlice({
+
+export const categoriesSlice = createSlice({
   name: "categories",
   initialState,
-
-  reducers: {},
+  reducers: {
+    resetCategoriesErrors(state){
+      state.errors = []
+      state.status = ""
+    }
+  },
   extraReducers(builder) {
     builder
-      .addCase(fetchCategories.pending, (state, action) => {
-        state.status = "loading";
+      .addCase(fetchCategories.pending, (state) => {
+        state.loading = "loading";
       })
-      .addCase(fetchCategories.fulfilled, (state, action) => {
+      .addCase(fetchCategories.fulfilled, (state, action: PayloadAction<ICategoryTypes[]>) => {
+        state.loading = "succeeded";
         state.status = "succeeded";
         const categories = action.payload.map(
-          (category: ICategory, index: number) => {
+          (category: ICategoryTypes, index: number) => {
             return {
               id: ++index,
               name: category.name,
@@ -117,54 +82,51 @@ export const productsSlice = createSlice({
             };
           }
         );
+        
         state.categories = categories;
       })
-      .addCase(fetchCategories.rejected, (state, action) => {
-        state.status = "failed";
-        state.error = action.error.message;
+      .addCase(fetchCategories.rejected, (state) => {
+        state.loading = "Failed to fetch";
       });
 
 
       builder.addCase(addCategory.pending, (state) => {
         state.status = "sending";
       });
-      builder.addCase(addCategory.fulfilled, (state, action) => {
-        state.status = "successful send";
-        console.log(action.payload)
+      builder.addCase(addCategory.fulfilled, (state, action: PayloadAction<IErrorTypes[]>) => {
         const errors = action.payload
-        console.log(errors)
-        
-    // state.sendProductError = errors.errors
+        if(errors.length>0){
+          state.errors = errors
+          state.status = "failure"
+        }else{  
+          state.status = "succeeded"
+          state.errors.length = 0
+         }
       });
-      builder.addCase(addCategory.rejected, (state, action) => {
-        state.status = "failed send";
-       
-        console.log(action);
+      builder.addCase(addCategory.rejected, (state) => {
+        state.status = "Failed to send";
       });
 
 
-
-
-      
       builder.addCase(editCategory.pending, (state) => {
         state.status = "sending";
       });
-      builder.addCase(editCategory.fulfilled, (state, action) => {
-        state.status = "successful send";
-        console.log(action.payload)
+      builder.addCase(editCategory.fulfilled, (state, action: PayloadAction<IErrorTypes[]>) => {
         const errors = action.payload
-        console.log(errors)
-        
-    // state.sendProductError = errors.errors
+        if(errors.length>0){
+          state.errors = errors
+          state.status = "failed"
+        }else{  
+          state.status = "successed"
+          state.errors.length = 0
+         }
       });
-      builder.addCase(editCategory.rejected, (state, action) => {
-        state.status = "failed send";
-       
-        console.log(action);
+      builder.addCase(editCategory.rejected, (state) => {
+        state.status = "Failed to send";
       });
   },
 });
 
-// export const {  } = productsSlice.actions
+export const { resetCategoriesErrors } = categoriesSlice.actions
 
-export default productsSlice.reducer;
+export default categoriesSlice.reducer;
